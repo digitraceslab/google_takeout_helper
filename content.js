@@ -89,6 +89,14 @@ function request_takeout() {
             checkbox.checked = true;
         }
     });
+
+    // Click on the button containit "Next step"
+    let buttons = document.querySelectorAll('button');
+    buttons.forEach(button => {
+        if (button.textContent.trim() === "Next step") {
+            button.click();
+        }
+    });
 }
 
 browser.runtime.onMessage.addListener(msg => {

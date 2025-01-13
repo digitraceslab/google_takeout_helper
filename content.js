@@ -100,8 +100,8 @@ function request_takeout() {
 }
 
 browser.runtime.onMessage.addListener(msg => {
-    console.log('Someone called', msg, msg["action"]);
-    if(msg["action"] == "deselectAll"){
+    console.log('Someone called', msg);
+    if(msg["action"] == "requestData"){
         request_takeout();
     }
 });

@@ -1,11 +1,10 @@
-console.log("document", document)
-
+const deselectAllButton = document.getElementById('deselectAll');
 const requestDataButton = document.getElementById('requestData');
 const downloadDataButton = document.getElementById('downloadData');
 const uploadDataButton = document.getElementById('uploadData');
 
 requestDataButton.addEventListener('click', () => {
-  console.log('Request Data button clicked');
+  browser.runtime.sendMessage({ action: 'requestData' });
 });
 
 downloadDataButton.addEventListener('click', () => {
@@ -16,14 +15,6 @@ uploadDataButton.addEventListener('click', () => {
   console.log('Upload Data button clicked');
 });
 
-document.addEventListener("DOMContentLoaded", function() {
-    document.getElementById('deselectAll').addEventListener('click', () => {
-      browser.tabs.query({ active: true, currentWindow: true }).then(tabs => {
-        console.log(tabs)
-        browser.tabs.sendMessage(
-            tabs[0].id,
-            { action: 'deselectAll' }
-        );
-      });
-    });
+deselectAllButton.addEventListener('click', () => {
+  console.log('Deselect Data button clicked');
 });

@@ -75,9 +75,24 @@ const takeout_items = [
 //    "YouTube and YouTube Music",
 ]
 
+function click_on(element_type, text_content, timeout = 100) {
+    setTimeout(() => {
+        let spans = document.querySelectorAll(element_type);
+        spans.forEach(span => {
+            if (span.textContent.trim() === text_content) {
+                console.log(span);
+                span.scrollIntoView(
+                    {behavior: 'smooth', block: 'center'}
+                );
+                span.click();
+            }
+        });
+    }, timeout);
+}
+
 function request_takeout() {
     // Select required checkboxes
-    console.log("selectCheckboxes called");
+    console.log("request_takeout called");
     // First deselect all checkboxes
     document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
         checkbox.checked = false;
@@ -89,14 +104,17 @@ function request_takeout() {
             checkbox.checked = true;
         }
     });
-
+    
     // Click on the button containit "Next step"
-    let buttons = document.querySelectorAll('button');
-    buttons.forEach(button => {
-        if (button.textContent.trim() === "Next step") {
-            button.click();
-        }
-    });
+    click_on("button", "Next step", 1);
+
+    // wait for a moment for the next panel to open
+    click_on("div", "2 GB", 500);
+    click_on("div", "10 GB", 1000);
+
+    // Click on the button containing "Create export"
+    click_on("button", "Create export", 500);
+    
 }
 
 browser.runtime.onMessage.addListener(msg => {

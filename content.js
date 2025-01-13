@@ -117,10 +117,26 @@ function request_takeout() {
     
 }
 
+
+function download_data() {
+    // Find the top-most download button on the page
+    let download_button = document.querySelector('button[aria-label="Download"]');
+    if (download_button) {
+        download_button.scrollIntoView(
+            {behavior: 'smooth', block: 'center'}
+        );
+        download_button.click();
+    }
+}
+
+
 browser.runtime.onMessage.addListener(msg => {
     console.log('Someone called', msg);
     if(msg["action"] == "requestData"){
         request_takeout();
+    }
+    if(msg["action"] == "downloadData"){
+        download_data();
     }
 });
 

@@ -105,7 +105,7 @@ function request_takeout() {
         }
     });
     
-    // Click on the button containit "Next step"
+    // Click on the button containing "Next step"
     click_on("button", "Next step", 1);
 
     // wait for a moment for the next panel to open
@@ -113,31 +113,39 @@ function request_takeout() {
     click_on("div", "50 GB", 1000);
 
     // Click on the button containing "Create export"
-    click_on("button", "Create export", 500);
-    
+    //click_on("button", "Create export", 500);
 }
 
 
 function download_data() {
-    // Find the top-most download button on the page
+    // We start on the manage exports page. We expect a single file export, which should
+    // have a download link immediately visible
     let download_button = document.querySelector('button[aria-label="Download"]');
-    if (download_button) {
-        download_button.scrollIntoView(
-            {behavior: 'smooth', block: 'center'}
-        );
+    if(download_button){
+        console.log(download_button);
         download_button.click();
+    } else {
+        console.error("Download button not found");
     }
+}
+
+function upload_data() {
 }
 
 
 browser.runtime.onMessage.addListener(msg => {
     console.log('Someone called', msg);
+    
     if(msg["action"] == "requestData"){
         request_takeout();
     }
+    
     if(msg["action"] == "downloadData"){
         download_data();
     }
+    
+    if(msg["action"] == "uploadData"){
+        upload_data();
+    }
 });
 
-console.log("listener added");

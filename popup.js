@@ -1,4 +1,3 @@
-const deselectAllButton = document.getElementById('deselectAll');
 const requestDataButton = document.getElementById('requestData');
 const downloadDataButton = document.getElementById('downloadData');
 const uploadDataButton = document.getElementById('uploadData');
@@ -8,13 +7,9 @@ requestDataButton.addEventListener('click', () => {
 });
 
 downloadDataButton.addEventListener('click', () => {
-  console.log('Download Data button clicked');
+  browser.runtime.sendMessage({ action: 'downloadData' });
 });
 
 uploadDataButton.addEventListener('click', () => {
-  console.log('Upload Data button clicked');
-});
-
-deselectAllButton.addEventListener('click', () => {
-  console.log('Deselect Data button clicked');
+  browser.runtime.sendMessage({ action: 'uploadData' });
 });

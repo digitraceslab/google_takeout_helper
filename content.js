@@ -110,7 +110,7 @@ function request_takeout() {
 
     // wait for a moment for the next panel to open
     click_on("div", "2 GB", 500);
-    click_on("div", "10 GB", 1000);
+    click_on("div", "50 GB", 1000);
 
     // Click on the button containing "Create export"
     click_on("button", "Create export", 500);

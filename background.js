@@ -35,6 +35,6 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
     if(message.action === "uploadData"){
         // Open the upload page (test page for now)
-        browser.tabs.create({ url: "127.0.0.1:8000/accounts/upload_takeout/" });
+        browser.tabs.create({ url: "http://127.0.0.1:8000/accounts/upload_takeout/" });
     }
 });

@@ -13,3 +13,9 @@ downloadDataButton.addEventListener('click', () => {
 uploadDataButton.addEventListener('click', () => {
   browser.runtime.sendMessage({ action: 'uploadData' });
 });
+
+browser.runtime.onMessage.addListener((message) => {
+  if (message.action === 'showAlert') {
+    alert(message.message);
+  }
+});

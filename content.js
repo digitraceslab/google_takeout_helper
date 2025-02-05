@@ -41,7 +41,7 @@ function request_takeout(takeout_items) {
     click_on("li", "50 GB", 500);
 
     // Click on the button containing "Create export"
-    //click_on("button", "Create export", 500);
+    click_on("button", "Create export", 500);
 }
 
 

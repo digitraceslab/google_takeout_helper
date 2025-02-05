@@ -58,7 +58,6 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
         browser.storage.local.get('studyPageUrl').then((result) => {
             const studyPageUrl = result.studyPageUrl;
             // Check if the current page is a study page
-            // Check if the study page URL is already stored
             browser.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
                 const currentTab = tabs[0];
                 fetchTakeoutItems(currentTab.url).then(takeout_items => {
@@ -67,6 +66,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
                     showAlert('Note: using currently open study page. If you are participating in a different study, please close this page and try again.');
                     browser.tabs.create({ url: uploadUrl });
                 }).catch(error => {
+                    // Check if the study page URL is already stored
                     if (studyPageUrl) {
                         browser.tabs.create({ url: `${studyPageUrl}/accounts/upload_takeout/` });
                     } else {

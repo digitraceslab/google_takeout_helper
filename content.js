@@ -57,9 +57,6 @@ function download_data() {
     }
 }
 
-function upload_data() {
-}
-
 
 browser.runtime.onMessage.addListener(msg => {
     console.log('Someone called', msg);
@@ -70,10 +67,6 @@ browser.runtime.onMessage.addListener(msg => {
     
     if(msg["action"] == "downloadData"){
         download_data();
-    }
-    
-    if(msg["action"] == "uploadData"){
-        upload_data();
     }
 });
 

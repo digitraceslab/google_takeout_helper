@@ -1,16 +1,14 @@
 {
   "manifest_version": 3,
   "name": "Google Takeout Helper",
-  "version": "0.0",
+  "version": "0.1",
   "description": "Helper for study participants for requesting, downloading, and uploading Google Takeout data.",
   "permissions": [
-      "storage",
-      "downloads",
-      "tabs",
-      "identity"
+      "tabs"
   ],
   "background": {
-      "service_worker": "background.js"
+    "service_worker": "background.js",
+    "scripts": ["browser-polyfill.js", "background.js"]
   },
   "action":{
       "default_popup": "popup.html",
@@ -29,11 +27,5 @@
         "content.js"
       ]
     }
-  ],
-  "applications": {
-      "gecko": {
-          "id": "your-extension-id@domain.com",
-          "strict_min_version": "91.0"
-      }
-  }
+  ]
 }

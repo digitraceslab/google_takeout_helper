@@ -3,8 +3,20 @@
     <title>Test Page</title>
     <script src="browser-polyfill.js" defer></script>
      <script src="popup.js" defer></script>
+     <style>
+      #alertContainer {
+          display: none;
+          background-color: #f8d7da;
+          color: #721c24;
+          padding: 10px;
+          margin: 10px 0;
+          border: 1px solid #f5c6cb;
+          border-radius: 4px;
+      }
+  </style>
   </head>
   <body>
+    <div id="alertContainer"></div>
     <button id="requestData">Request Data</button>
     <button id="downloadData">Download Data</button>
     <button id="uploadData">Upload Data</button>

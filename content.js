@@ -59,7 +59,7 @@ function download_data() {
 
 
 browser.runtime.onMessage.addListener(msg => {
-    console.log('Someone called', msg);
+    console.log('Someone called content', msg);
     
     if(msg["action"] == "requestData"){
         request_takeout(msg["payload"]["takeout_items"]);

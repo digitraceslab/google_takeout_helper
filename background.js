@@ -1,4 +1,12 @@
-importScripts("./browser-polyfill.js");
+// Check if the environment is a service worker (Chrome) or a regular script (Firefox)
+if (typeof browser === 'undefined') {
+    if (typeof importScripts === 'function') {
+        // Chrome (service worker)
+        importScripts('webextension-polyfill.js');
+    } else {
+        console.error('Browser not supported');
+    }
+}
 
 
 browser.runtime.onInstalled.addListener(() => {
@@ -31,7 +39,7 @@ function fetchTakeoutItems(url) {
 
 
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
-    console.log('Someone called', message);
+    console.log('Someone called background', message);
     
     if(message.action === "requestData"){
         browser.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
@@ -40,10 +48,11 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
             const studyPageUrl = url.origin
             fetchTakeoutItems(studyPageUrl).then(takeout_items => {
                 console.log('Takeout items:', takeout_items);
-                browser.storage.local.set({ studyPageUrl: studyPageUrl });
+                localStorage.setItem({ studyPageUrl: studyPageUrl });
                 load_url_with_action("https://takeout.google.com", 'requestData', {"takeout_items": takeout_items});
             }).catch(error => {
                 console.error('Error fetching takeout items:', error);
+                alert("H1!");
                 browser.runtime.sendMessage({ action: 'showAlert', message: 'Please open the study page and try again.' });
             });
         });
@@ -55,24 +64,22 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
     if(message.action === "uploadData"){
         // Open the upload page (test page for now)
-        browser.storage.local.get('studyPageUrl').then((result) => {
-            const studyPageUrl = result.studyPageUrl;
-            // Check if the current page is a study page
-            browser.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
-                const currentTab = tabs[0];
-                fetchTakeoutItems(currentTab.url).then(takeout_items => {
-                    const url = new URL(currentTab.url);
-                    const uploadUrl = `${url.origin}/accounts/upload_takeout/`;
-                    showAlert('Note: using currently open study page. If you are participating in a different study, please close this page and try again.');
-                    browser.tabs.create({ url: uploadUrl });
-                }).catch(error => {
-                    // Check if the study page URL is already stored
-                    if (studyPageUrl) {
-                        browser.tabs.create({ url: `${studyPageUrl}/accounts/upload_takeout/` });
-                    } else {
-                        showAlert('Please open the study page and try again.');
-                    }
-                });
+        const studyPageUrl = localStorage.getItem('studyPageUrl')
+        // Check if the current page is a study page
+        browser.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
+            const currentTab = tabs[0];
+            fetchTakeoutItems(currentTab.url).then(takeout_items => {
+                const url = new URL(currentTab.url);
+                const uploadUrl = `${url.origin}/accounts/upload_takeout/`;
+                browser.runtime.sendMessage({ action: 'showAlert', message: 'Note: using currently open study page. If you are participating in a different study, please close this page and try again.' });
+                browser.tabs.create({ url: uploadUrl });
+            }).catch(error => {
+                // Check if the study page URL is already stored
+                if (studyPageUrl) {
+                    browser.tabs.create({ url: `${studyPageUrl}/accounts/upload_takeout/` });
+                } else {
+                    browser.runtime.sendMessage({ action: 'showAlert', message: 'Please open the study page and try again.' });
+                }
             });
         });
     }

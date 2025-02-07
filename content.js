@@ -3,7 +3,7 @@ console.log("content.js loaded");
 if (typeof browser === 'undefined') {
     if (typeof importScripts === 'function') {
         // Chrome (service worker)
-        importScripts('webextension-polyfill.js');
+        importScripts('browser-polyfill.js');
     } else {
         console.error('Browser not supported');
     }

@@ -2,7 +2,7 @@
 if (typeof browser === 'undefined') {
     if (typeof importScripts === 'function') {
         // Chrome (service worker)
-        importScripts('webextension-polyfill.js');
+        importScripts('browser-polyfill.js');
     } else {
         console.error('Browser not supported');
     }
@@ -51,10 +51,12 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
                     console.log('Takeout items:', takeout_items);
                     localStorage.setItem('studyPageUrl', studyPageUrl);
                     load_url_with_action("https://takeout.google.com", 'requestData', {"takeout_items": takeout_items});
+                }).catch(error => {
+                    console.error('Error fetching takeout items:', error);
+                    browser.runtime.sendMessage({ action: 'showAlert', message: 'Please open the study page and try again.' });
                 });
             } catch(error) {
                 console.error('Error fetching takeout items:', error);
-                alert("H1!");
                 browser.runtime.sendMessage({ action: 'showAlert', message: 'Please open the study page and try again.' });
             }
         });

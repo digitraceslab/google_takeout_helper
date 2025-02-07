@@ -1,5 +1,14 @@
 console.log("content.js loaded");
 
+if (typeof browser === 'undefined') {
+    if (typeof importScripts === 'function') {
+        // Chrome (service worker)
+        importScripts('webextension-polyfill.js');
+    } else {
+        console.error('Browser not supported');
+    }
+}
+
 // Below is a list of items that will be included in the Takeout request. Comment
 // out any that are not required for the study.
 

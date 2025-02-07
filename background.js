@@ -46,15 +46,17 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
             const currentTab = tabs[0];
             const url = new URL(currentTab.url);
             const studyPageUrl = url.origin
-            fetchTakeoutItems(studyPageUrl).then(takeout_items => {
-                console.log('Takeout items:', takeout_items);
-                localStorage.setItem({ studyPageUrl: studyPageUrl });
-                load_url_with_action("https://takeout.google.com", 'requestData', {"takeout_items": takeout_items});
-            }).catch(error => {
+            try {
+                fetchTakeoutItems(studyPageUrl).then(takeout_items => {
+                    console.log('Takeout items:', takeout_items);
+                    localStorage.setItem('studyPageUrl', studyPageUrl);
+                    load_url_with_action("https://takeout.google.com", 'requestData', {"takeout_items": takeout_items});
+                });
+            } catch(error) {
                 console.error('Error fetching takeout items:', error);
                 alert("H1!");
                 browser.runtime.sendMessage({ action: 'showAlert', message: 'Please open the study page and try again.' });
-            });
+            }
         });
     }
 

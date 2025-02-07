@@ -8,6 +8,23 @@ if (typeof browser === 'undefined') {
     }
 }
 
+function setStorage(key, value) {
+    if (typeof localStorage == 'undefined') {
+        browser.storage.local.set({ [key]: value });
+    } else {
+        localStorage.setItem(key, value);
+    }
+}
+
+async function getStorage(key) {
+    if (typeof localStorage == 'undefined') {
+        const result = await browser.storage.local.get(key);
+        return result[key];
+    } else {
+        return localStorage.getItem(key);
+    }
+}
+
 
 browser.runtime.onInstalled.addListener(() => {
     console.log('Google Takeout Helper extension installed.');
@@ -49,7 +66,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
             try {
                 fetchTakeoutItems(studyPageUrl).then(takeout_items => {
                     console.log('Takeout items:', takeout_items);
-                    localStorage.setItem('studyPageUrl', studyPageUrl);
+                    setStorage('studyPageUrl', studyPageUrl);
                     load_url_with_action("https://takeout.google.com", 'requestData', {"takeout_items": takeout_items});
                 }).catch(error => {
                     console.error('Error fetching takeout items:', error);
@@ -67,23 +84,27 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
     }
 
     if(message.action === "uploadData"){
-        // Open the upload page (test page for now)
-        const studyPageUrl = localStorage.getItem('studyPageUrl')
+        // Open the upload page
         // Check if the current page is a study page
         browser.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
             const currentTab = tabs[0];
             fetchTakeoutItems(currentTab.url).then(takeout_items => {
                 const url = new URL(currentTab.url);
                 const uploadUrl = `${url.origin}/accounts/upload_takeout/`;
+                console.log('Takeout items:', takeout_items);
                 browser.runtime.sendMessage({ action: 'showAlert', message: 'Note: using currently open study page. If you are participating in a different study, please close this page and try again.' });
                 browser.tabs.create({ url: uploadUrl });
             }).catch(error => {
-                // Check if the study page URL is already stored
-                if (studyPageUrl) {
-                    browser.tabs.create({ url: `${studyPageUrl}/accounts/upload_takeout/` });
-                } else {
+                getStorage('studyPageUrl').then(studyPageUrl => {
+                    if (studyPageUrl) {
+                        console.log(`${studyPageUrl}/accounts/upload_takeout/`)
+                        browser.tabs.create({ url: `${studyPageUrl}/accounts/upload_takeout/` });
+                    } else {
+                        browser.runtime.sendMessage({ action: 'showAlert', message: 'Please open the study page and try again.' });
+                    }
+                }).catch(error => {
                     browser.runtime.sendMessage({ action: 'showAlert', message: 'Please open the study page and try again.' });
-                }
+                });
             });
         });
     }

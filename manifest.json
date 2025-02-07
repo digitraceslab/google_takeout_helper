@@ -4,7 +4,8 @@
   "version": "0.1",
   "description": "Helper for study participants for requesting, downloading, and uploading Google Takeout data.",
   "permissions": [
-      "tabs"
+      "tabs",
+      "storage"
   ],
   "background": {
     "service_worker": "background.js",
@@ -27,5 +28,11 @@
         "content.js"
       ]
     }
-  ]
+  ],
+  "browser_specific_settings": {
+    "gecko": {
+     "id": "google_takeout_helper@digitraceslab.com",
+     "strict_min_version": "58.0"
+    }
+  }
 }

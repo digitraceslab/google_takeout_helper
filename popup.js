@@ -1,3 +1,13 @@
+// This script is executed in the popup window for the extension 
+// (which shows up when you click on the extension).
+//
+// The popup window contains three buttons: requestData, downloadData,
+// and uploadData. When a button is clicked, we send a message to 
+// background.js to perform the corresponding action.
+//
+// The popup also displays an alert message when requested by other
+// components.
+
 if (typeof browser === 'undefined') {
   if (typeof importScripts === 'function') {
       // Chrome (service worker)

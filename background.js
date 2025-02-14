@@ -1,3 +1,16 @@
+// This script run in the background when the extension is installed.
+// It listens for messages from the popup script and performs the corresponding
+// action.
+//
+// The actions are:
+//  - requestData: Open the Google Takeout page and send a message to the new
+//    tab to run the rest of the workflow in content.js.
+//  - downloadData: Open the Google Takeout page and send a message to the new
+//    tab to download the data.
+//  - uploadData: Open the upload page.
+//
+// The requestData action requires the study page is open and stores the URL.
+
 // Check if the environment is a service worker (Chrome) or a regular script (Firefox)
 if (typeof browser === 'undefined') {
     if (typeof importScripts === 'function') {

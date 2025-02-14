@@ -1,3 +1,17 @@
+// This script is added to the actual website and can modify diplayed
+// content. It listens for messages from the background script and performs
+// the corresponding action.
+//
+// The actions are:
+//  - requestData: Run the workflow to request data from Google Takeout.
+//                 Selects the required checkboxes and clicks appropriate
+//                 buttons to start the export process.
+//  - downloadData: Clicks the download button on the Google Takeout page.
+//
+// The script is loaded into the page when it matches the URL
+// "takeout.google.com". However nothing is executed unless a message is
+// received first.
+
 console.log("content.js loaded");
 
 if (typeof browser === 'undefined') {

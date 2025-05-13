@@ -26,18 +26,25 @@ if (typeof browser === 'undefined') {
 // Below is a list of items that will be included in the Takeout request. Comment
 // out any that are not required for the study.
 
-function click_on(element_type, text_content, timeout = 100) {
+function click_on(element_type, text_content, timeout = 100, first = true) {
+    var BreakException = {};
     setTimeout(() => {
         let elements = document.querySelectorAll(element_type);
-        elements.forEach(element => {
+        try {
+          elements.forEach(element => {
             if (element.textContent.trim() === text_content) {
-                console.log(element);
                 element.scrollIntoView(
                     {behavior: 'smooth', block: 'center'}
                 );
                 element.click();
+                if(first) {
+                    throw BreakException;
+                }
             }
-        });
+          });
+        } catch (e) {
+            if (e !== BreakException) throw e;
+        }
     }, timeout);
 }
 
@@ -46,13 +53,17 @@ function request_takeout(takeout_items) {
     console.log("request_takeout called");
     // First deselect all checkboxes
     document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
-        checkbox.checked = false;
+        if (checkbox.checked) {
+            checkbox.click();
+        }
     });
     // Then select the required checkboxes
     takeout_items.forEach(item => {
         let checkbox = document.querySelector(`input[type="checkbox"][name="${item}"]`);
         if (checkbox && checkbox.type === "checkbox") {
-            checkbox.checked = true;
+            if(!checkbox.checked) {
+                checkbox.click();
+            }
         }
     });
     
@@ -69,15 +80,14 @@ function request_takeout(takeout_items) {
 
 
 function download_data() {
-    // We start on the manage exports page. We expect a single file export, which should
-    // have a download link immediately visible
-    let download_button = document.querySelector('button[aria-label="Download"]');
-    if(download_button){
-        console.log(download_button);
-        download_button.click();
-    } else {
-        console.error("Download button not found");
-    }
+    // We start on the manage exports page. There should be a list of items, and at least
+    // one contains the word "Completed" in a <p> tag.
+    // We pick the first one and click.
+
+    click_on("p", "Completed", 50);
+    
+    // Could click the download button, but leave it for now. 
+    
 }
 
 

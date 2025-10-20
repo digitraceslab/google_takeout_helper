@@ -91,7 +91,7 @@ function download_data() {
 }
 
 
-browser.runtime.onMessage.addListener(msg => {
+browser.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     console.log('Someone called content', msg);
     
     if(msg["action"] == "requestData"){
@@ -100,6 +100,14 @@ browser.runtime.onMessage.addListener(msg => {
     
     if(msg["action"] == "downloadData"){
         download_data();
+    }
+
+    if(msg.action === "fetchTakeoutItems") {
+        fetch('/api/takeout_items/')
+            .then(response => response.json())
+            .then(data => sendResponse(data.items))
+            .catch(error => sendResponse({error: error.message}));
+        return true;
     }
 });
 

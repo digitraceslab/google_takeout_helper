@@ -73,22 +73,20 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
     
     if(message.action === "requestData"){
         browser.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
-            const currentTab = tabs[0];
-            const url = new URL(currentTab.url);
-            const studyPageUrl = url.origin
-            try {
-                fetchTakeoutItems(studyPageUrl).then(takeout_items => {
-                    console.log('Takeout items:', takeout_items);
-                    setStorage('studyPageUrl', studyPageUrl);
-                    load_url_with_action("https://takeout.google.com", 'requestData', {"takeout_items": takeout_items});
-                }).catch(error => {
-                    console.error('Error fetching takeout items:', error);
+            browser.tabs.sendMessage(tabs[0].id, {action: "fetchTakeoutItems"})
+                .then((items) => {
+                    console.log('Fetched takeout items:', items);
+                    if(items.error) {
+                        browser.runtime.sendMessage({ action: 'showAlert', message: 'Please open the study page and try again.' });
+                    } else {
+                        setStorage('studyPageUrl', new URL(tabs[0].url).origin);
+                        load_url_with_action("https://takeout.google.com", 'requestData', {"takeout_items": items});
+                    }
+                })
+                .catch((error) => {
+                    console.log('failed to fetch takeout items:', error);
                     browser.runtime.sendMessage({ action: 'showAlert', message: 'Please open the study page and try again.' });
                 });
-            } catch(error) {
-                console.error('Error fetching takeout items:', error);
-                browser.runtime.sendMessage({ action: 'showAlert', message: 'Please open the study page and try again.' });
-            }
         });
     }
 

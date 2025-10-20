@@ -22,7 +22,10 @@
   },
   "content_scripts": [
     {
-      "matches": ["https://takeout.google.com/*"],
+      "matches": [
+        "https://takeout.google.com/*",
+        "https://takeout.digitraceslab.com/*"
+      ],
       "js": [
         "browser-polyfill.js",
         "content.js"
